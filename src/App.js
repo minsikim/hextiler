@@ -100,7 +100,7 @@ function App() {
   let arr = [];
 
   let type = "round";
-  let size = 10;
+  let size = 7;
 
   if(type === "round"){
     for(var i = 0; size > i; i++){
@@ -114,6 +114,9 @@ function App() {
     }
   }
 
+  // for(var i = 0; i < arr.length / 1.1; i++){
+  //   arr.splice(Math.floor(Math.random()*arr.length), 1);
+  // }
 
   let tiles =  arr.map((obj, idx)=>{
     return <HexTile data={obj} key={idx}/>

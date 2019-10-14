@@ -11,7 +11,8 @@ class hexTile extends Component {
         transform: `translate(${this.x*this.size}px, ${this.y*this.size}px)`,
         width: this.size-2,
         height: this.size-2,
-        borderRadius: this.size
+        borderRadius: this.size,
+        backgroundColor: `rgb(${Math.random() * 100 + 155},${Math.random() * 100 + 155},${Math.random() * 50})`
     };
 
     render(){
