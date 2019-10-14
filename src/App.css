@@ -20,3 +20,19 @@
 .App-link {
   color: #09d3ac;
 }
+
+.Controller{
+  position: absolute;
+  bottom: 20px;
+  width: calc(100% - 60px);
+  padding: 0 30px;
+  color: white;
+}
+.Controller .CustomRanges:last-child{
+  margin-bottom: 20px;
+}
+.Controller button{
+  margin-top: 30px;
+  height: 30px;
+  width: calc(100% - 60px);
+}

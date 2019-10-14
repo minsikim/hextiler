@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {Component}from 'react';
+import Slider, { Range } from 'rc-slider';
 
 import HexTile from './Components/HexTile/HexTile';
 
 import './App.css';
+import 'rc-slider/assets/index.css';
 
 function getHexX(c){
 
@@ -95,41 +97,101 @@ function getHexY(c){
   return yAmount;
 }
 
-function App() {
+class App extends Component{
 
-  let arr = [];
-
-  let type = "round";
-  let size = 7;
-
-  if(type === "round"){
-    for(var i = 0; size > i; i++){
-      for(var j = 0; (i * 6) + 1 > j; j++){
-        arr.push({
-          coordinates : [i, j],
-          x: getHexX([i, j]),
-          y : getHexY([i, j])
-        })
-      }
-    }
+  state = {
+    tileArray: [],
+    hexType: "round",
+    size: 7,
+    density: 100,
+    generateOnChange: true
   }
 
-  // for(var i = 0; i < arr.length / 1.1; i++){
-  //   arr.splice(Math.floor(Math.random()*arr.length), 1);
-  // }
+  genHexTiles = () => {
+    let arr = [];
 
-  let tiles =  arr.map((obj, idx)=>{
-    return <HexTile data={obj} key={idx}/>
-  })
+    let type = this.state.hexType;
+    let size = this.state.size;
+  
+    if(type === "round"){
+      for(var i = 0; size > i; i++){
+        for(var j = 0; (i * 6) + 1 > j; j++){
+          arr.push({
+            coordinates : [i, j],
+            x: getHexX([i, j]),
+            y : getHexY([i, j])
+          })
+        }
+      }
+    }
+    return arr;
+  }
 
+  randomDelete = (array) => {
+    let tempArr = array ? array : this.state.tileArray;
+    let tempLength = tempArr.length;
+    for(var i = 0; i < tempLength * (100 - this.state.density) / 100; i++){
+      console.log(tempArr.length);
+      tempArr.splice(Math.floor(Math.random()*tempArr.length), 1);
+    }
+    return tempArr;
+  }
 
-  return (
-    <div className="App">
-      <div className="HexTileWrapper" id="HexTileWrapper">
-        {tiles}
+  updateTileArray = () => {
+    let array = this.genHexTiles();
+    this.setState((prevState)=>{
+      if(prevState.tileArray !== array){
+        return{
+          tileArray: array
+        }
+      }
+    })
+  }
+
+  changeHiveSize = (val)=>{
+    if(val && this.state.size !== val-1) this.setState({size: val-1})
+    if(this.state.generateOnChange) this.updateTileArray();
+  }
+  changeDensity = (val)=>{
+    if(val && this.state.density !== val) this.setState({density: val})
+    if(this.state.generateOnChange) this.updateTileArray();
+  }
+
+  componentDidMount(){
+    this.updateTileArray()
+  }
+
+  render(){
+    let tempArray = this.state.tileArray;
+    let tiles =  this.randomDelete(tempArray).map((obj, idx)=>{
+      return <HexTile data={obj} key={idx} img={"hex-05.png"}/>
+    })
+    
+    return (
+      <div className="App">
+        <div className="HexTileWrapper" id="HexTileWrapper">
+          {tiles}
+        </div>
+        <div className="Controller">
+          <div className="CustomRanges">
+              <p>Hive Size : {this.state.size}</p>
+              <Slider id="SliderSize" min={0} max={30} defaultValue={7} tipFormatter={value => `${value}`} 
+                  onChange={this.changeHiveSize}
+                  marks={{0:"0", 10:"10", 20:"20", 30:"30"}}/>
+          </div>
+          <div className="CustomRanges">
+              <p>Density : {this.state.desity}</p>
+              <Slider id="SliderDensity" min={0} max={100} defaultValue={100} tipFormatter={value => `${value}%`} 
+                  onChange={this.changeDensity}
+                  marks={{0:"0", 25:"25", 50:"50", 75:"75", 100:"100"}}/>
+          </div>
+          <button onClick={this.updateTileArray}>Generate</button>
+        </div>
+        
       </div>
-    </div>
-  );
+    );
+  }
+
 }
 
 export default App;
